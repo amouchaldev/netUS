@@ -33,12 +33,12 @@
               <li class="nav-item">
                   <i class="fa-solid fa-magnifying-glass fa-lg mx-1"></i>
               </li>
-              {{-- <li class="nav-item">
-                  <i class="fa-solid fa-envelope fa-lg mx-1"></i>
-              </li> --}}
               <li class="nav-item">
-                  <i class="fa-solid fa-bell fa-lg mx-1"></i>
+                <a href="/chat" class="text-decoration-none text-light"><i class="fa-solid fa-envelope fa-lg mx-1"></i></a>
               </li>
+              {{-- <li class="nav-item">
+                  <i class="fa-solid fa-bell fa-lg mx-1"></i>
+              </li> --}}
               <li class="dropdown">
                   <span 
                   class="dropdown-toggle ms-2" 
@@ -50,7 +50,7 @@
                   <i class="fa-solid fa-user"></i>
                   </span>
                   <div class="dropdown-menu" aria-labelledby="triggerId">
-                      <a class="dropdown-item" href="{{ route('users.show', Auth::user()->username) }}">{{ Auth::user()->fName }}</a>
+                      <a class="dropdown-item" href="{{ route('users.show', Auth::user()->username) }}">{{ Auth::user()->username }}</a>
                       <a class="dropdown-item disabled" href="#">Disabled action</a>
                       <h6 class="dropdown-header">Section header</h6>
                       <a class="dropdown-item" href="#">Action</a>

@@ -4,10 +4,10 @@
     <div class="d-flex align-items-center">
         <div class="me-4 text-center likes">
             <i class="fa-solid fa-chevron-up text-primary like-post cursor-pointer"></i>
-            <div class="likes_count">{{ $post->likes_count }}</div>  
-            <i class="fa-solid fa-chevron-down text-primary deslike-post cursor-pointer"'></i>
-    </div>
-
+            <div class="likes_count">{{ $post->likes_count - $post->dislikes_count }}</div>  
+            {{-- <div class="likes_count">{{ $post->likes_count }}</div>   --}}
+            <i class="fa-solid fa-chevron-down text-primary dislike-post cursor-pointer"'></i>
+        </div>
         <div class="d-flex flex-column">
             <a href="{{ route('users.show', $post->user->username) }}" class="d-flex align-items-center mb-2 text-decoration-none text-dark">
                 <div class="card-avatar overflow-hidden">
@@ -16,7 +16,7 @@
                      alt="" class="w-100 h-100">
                 </div>
                 <h6 class="mb-0 ms-2">
-                    {{ $post->user->fName . ' ' .  $post->user->lName}}
+                    {{ $post->user->name }}
                 </h6>
             </a>
 

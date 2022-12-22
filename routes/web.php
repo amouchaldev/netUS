@@ -56,6 +56,7 @@ Route::group(['middleware' => ['auth', 'isMembre'], 'as' => 'comments.'], functi
     Route::patch('/comments/{id}/update', [CommentController::class, 'update'])->name('update');   
     
 });
+Route::post('/comments/{id}/{action}', [CommentController::class, 'action'])->name('action');   
 
 
 Route::get('/community/{slug}/{status?}', [CommunityController::class, 'community'])->name('communities.index');

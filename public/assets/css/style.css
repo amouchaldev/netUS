@@ -56,14 +56,23 @@ form .firtName, form .lastName {
     transition: all .4s ease;
     font-size: 21px;
 }
-
+.like-comment:active, .dislike-comment:active {
+    transition: all .4s ease;
+    font-size: 21px;
+}
+/* 
 .likes::nth-child(3):hover .likes::nth-child(2){
     transition: all .4s ease;
     font-size: 21px;
     color: var(--first-color);
-}
+} */
 
 .like-post:active + .likes_count {
+    transition: all .2s ease-out;
+    font-size: 21px;
+    color: var(--first-color);
+}
+.like-comment:active + .likes_count {
     transition: all .2s ease-out;
     font-size: 21px;
     color: var(--first-color);

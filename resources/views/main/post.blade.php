@@ -9,7 +9,7 @@
     
             <div class="col-12 col-lg-8 mb-5 mb-lg-0">
                     <div class="row">
-                    <div class="col-12" id="post-show">
+                    <div class="col-12" id="posts">
                         {{-- placeholder loading --}}
                         <x-post-placeholder></x-post-placeholder>
                         {{-- post --}}
@@ -22,8 +22,8 @@
                     ></x-create-form>
                     @endauth
                     {{-- comments --}}
+                    <h5 class="my-4">Comments</h5>
                     <div id="comments">
-                        <h5 class="my-4">Comments</h5>
                         
                         
                         {{-- placeholder loading --}}
@@ -46,17 +46,16 @@
                     {{-- learn also --}}
                     <h5 class="my-4">Also learn</h5>
                     <ul class="list-group">
-                        <li class="list-group-item list-group-item-action"><a href="#" class="text-dark text-decoration-none">Cras justo odio</a></li>
-                        <li class="list-group-item list-group-item-action"><a href="#" class="text-dark text-decoration-none">Cras justo odio</a></li>
-                        <li class="list-group-item list-group-item-action"><a href="#" class="text-dark text-decoration-none">Cras justo odio</a></li>
-                        <li class="list-group-item list-group-item-action"><a href="#" class="text-dark text-decoration-none">Cras justo odio</a></li>
+                        @foreach($alsoLearn as $post)
+                        <li class="list-group-item list-group-item-action"><a href="{{ route('posts.show', $post->slug) }}" class="text-dark text-decoration-none">{{ $post->title }}</a></li>
+                        @endforeach
                     </ul>
                     </div>
                 </div>
             </div>
             
             <div class="col-12 col-lg-4">
-                <x-communities :communities="$recommendedCommunities"></x-communities>
+                @include('layouts.communities')
             </div>
             
         </div>
@@ -93,7 +92,7 @@
     });
     // # DELETE COMMENT 
    // get edit document elements
-   const editComment = document.querySelectorAll('.edit-comment')
+   let editComment = document.querySelectorAll('.edit-comment')
    editComment.forEach(el => {
        el.addEventListener('click', e => {
 
@@ -126,79 +125,15 @@
 
    initShareForm()
 
+   
     let follow = document.querySelectorAll('.follow')
     follow.forEach(community => {
         community.addEventListener('click', followCommunity)
     })
 
 
-    // LIKE / DESLIKE POST
-    // # LIKE:
-    const likeArrow = document.querySelector('.like-post') 
-    likeArrow.addEventListener('click', e => {
-        _likePost(e.target.parentElement.parentElement.previousElementSibling.value, e.target.nextElementSibling)
-    })
-    
-        function _likePost(post_id, likes_count) {
-            const xhttp = new XMLHttpRequest();
-            xhttp.onload = function() {
-                const response = JSON.parse(this.responseText)
-                console.log(response)
-                if (response.message == 'OK') {
-                    likes_count.innerHTML = parseInt(likes_count.innerHTML) + 1
-                }
-                else if (response.message == 'LIKED') {
-                    likes_count.innerHTML = parseInt(likes_count.innerHTML) == -1 ? + 2 : 1
-                }
-                else if (response.message == 'DELETED') {
-                    likes_count.innerHTML = parseInt(likes_count.innerHTML) > 0 ? parseInt(likes_count.innerHTML) - 1 : 0
-                }
-                else if (response.message == 'NOT AUTHENTICATED') {
-                    Swal.fire({
-                        title: 'You Are Not Authenticated',
-                    })
-                    // window.location.href = '/login'
-                }
-            } 
-            xhttp.open('POST', '/post/' + post_id + '/like')
-            xhttp.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').content);
-            xhttp.setRequestHeader('Content-Type', 'application/json');
-            xhttp.send()
-    }
-    // # DESLIKE:
-    const deslikeArrow = document.querySelector('.deslike-post') 
-    deslikeArrow.addEventListener('click', e => {
-        _deslikePost(e.target.parentElement.parentElement.previousElementSibling.value, e.target.previousElementSibling)
-    })
-    function _deslikePost(post_id, likes_count) {
-            console.log(post_id, likes_count)
-            const xhttp = new XMLHttpRequest();
-            xhttp.onload = function() {
-                const response = JSON.parse(this.responseText)
-                console.log(response)
-                if (response.message == 'OK') {
-                    likes_count.innerHTML = parseInt(likes_count.innerHTML) == 1 ? - 2 : - 1
-                }
-                else if (response.message == 'DISLIKED') {
-                    likes_count.innerHTML = parseInt(likes_count.innerHTML) == 1 ?  -2 : -1
-                }
-                else if (response.message == 'DELETED') {
-                    likes_count.innerHTML = parseInt(likes_count.innerHTML) + 1
-                }
-                else if (response.message == 'NOT AUTHENTICATED') {
-                    Swal.fire({
-                        title: 'You Are Not Authenticated',
-                    })
-                    // window.location.href = '/login'
-                }
-            } 
-            xhttp.open('POST', '/post/' + post_id + '/dislike')
-            xhttp.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').content);
-            xhttp.setRequestHeader('Content-Type', 'application/json');
-            xhttp.send()
-    }
-
-
+    likeDislikePostsAction()
+    likeDislikeCommentAction()
 </script>
 
 

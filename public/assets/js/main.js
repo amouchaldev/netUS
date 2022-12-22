@@ -116,3 +116,82 @@ function _updateComment(id, newComment) {
  }
 
 
+ function _like(route, id, likes_count) {
+  // console.log(post_id, likes_count)
+
+  const xhttp = new XMLHttpRequest();
+  xhttp.onload = function() {
+      const response = JSON.parse(this.responseText)
+      console.log(response)
+      if (response.status) {
+        likes_count.innerHTML = response.likes_count
+      }
+      else if (response.message == 'NOT AUTHENTICATED') {
+        window.location.href = '/login'
+      }
+  } 
+  // xhttp.open('POST', '/post/' + post_id + '/like')
+  xhttp.open('POST', `/${route}/${id}/like`)
+  xhttp.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').content);
+  xhttp.setRequestHeader('Content-Type', 'application/json');
+  xhttp.send()
+}
+
+function _dislike(route, id, likes_count) {
+  // console.log(post_id, likes_count)
+  const xhttp = new XMLHttpRequest();
+  xhttp.onload = function() {
+      const response = JSON.parse(this.responseText)
+      console.log(response)
+      if (response.status) {
+        likes_count.innerHTML = response.likes_count
+      }
+      else if (response.message == 'NOT AUTHENTICATED') {
+        window.location.href = '/login'
+      }
+  } 
+  // xhttp.open('POST', '/post/' + id + '/dislike')
+  xhttp.open('POST', `/${route}/${id}/dislike`)
+  xhttp.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').content);
+  xhttp.setRequestHeader('Content-Type', 'application/json');
+  xhttp.send()
+}
+
+
+
+
+function likeDislikeCommentAction() {
+
+  // LIKE / DESLIKE COMMENTS
+  // # LIKE COMMENT:
+  let likeComment = document.querySelectorAll('.like-comment') 
+
+  likeComment.forEach(arrow => arrow.addEventListener('click', e => {
+  _like('comments', e.target.parentElement.parentElement.previousElementSibling.value, e.target.nextElementSibling)
+  }))
+
+  // # DESLIKE COMMENT:
+  let dislikeComment = document.querySelectorAll('.dislike-comment') 
+
+  dislikeComment.forEach(arrow => arrow.addEventListener('click', e => {
+  _dislike('comments', e.target.parentElement.parentElement.previousElementSibling.value, e.target.previousElementSibling)
+  }))
+}
+
+
+
+
+function likeDislikePostsAction() {
+  // LIKE / DESLIKE POST
+     // # LIKE POST:
+     const likePost = document.querySelector('.like-post') 
+     likePost.addEventListener('click', e => {
+         _like('post', e.target.parentElement.parentElement.previousElementSibling.value, e.target.nextElementSibling)
+     })
+     
+     // # DESLIKE POST:
+     const dislikePost = document.querySelector('.dislike-post') 
+     dislikePost.addEventListener('click', e => {
+         _dislike('post', e.target.parentElement.parentElement.previousElementSibling.value, e.target.previousElementSibling)
+     })
+         }

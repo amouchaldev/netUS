@@ -1,10 +1,10 @@
 <div class="p-3 bg-white rounded mb-3 comment d-none">
+    <input type="hidden" value="{{ $comment->id }}">
     <div class="d-flex align-items-center mb-3">
-
         <div class="me-4 text-center">
-            <i class="fa-solid fa-chevron-up text-primary"></i>
-            <div>3</div>  
-            <i class="fa-solid fa-chevron-down text-primary"></i>
+            <i class="fa-solid fa-chevron-up text-primary like-comment cursor-pointer"></i>
+            <div class="likes_count">{{ $comment->likes_count - $comment->dislikes_count }}</div>  
+            <i class="fa-solid fa-chevron-down text-primary dislike-comment cursor-pointer"></i>
         </div>
 
         <div class="d-flex flex-column">
@@ -15,7 +15,7 @@
                      alt="" class="w-100 h-100">
                 </div>
                 <h6 class="mb-0 ms-2">
-                    {{ $comment->user->fName . ' ' .  $comment->user->lName}}
+                    {{ $comment->user->name }}
                 </h6>
             </a>
    

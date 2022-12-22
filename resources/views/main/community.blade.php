@@ -36,16 +36,7 @@
       </div>
       {{-- last commets--}}
       <div class="col-12 col-lg-4">
-        <ul class="list-group">
-            <li class="list-group-item list-group-item-action"><h5 class="mb-0">lastest comments</h5></li>
-            <li class="list-group-item list-group-item-action"><a href="#" class="text-dark text-decoration-none"><a href="/user" class="text-decoration-none">ahmed walid </a>Lorem ipsum dolor sit amet consectetur adipisicing elit...</li>
-            <li class="list-group-item list-group-item-action"><a href="#" class="text-dark text-decoration-none"><a href="/user" class="text-decoration-none">ahmed walid </a>Lorem ipsum dolor sit amet consectetur adipisicing elit...</li>
-            <li class="list-group-item list-group-item-action"><a href="#" class="text-dark text-decoration-none"><a href="/user" class="text-decoration-none">ahmed walid </a>Lorem ipsum dolor sit amet consectetur adipisicing elit...</li>
-            <li class="list-group-item list-group-item-action"><a href="#" class="text-dark text-decoration-none"><a href="/user" class="text-decoration-none">ahmed walid </a>Lorem ipsum dolor sit amet consectetur adipisicing elit...</li>
-            <li class="list-group-item list-group-item-action"><a href="#" class="text-dark text-decoration-none"><a href="/user" class="text-decoration-none">ahmed walid </a>Lorem ipsum dolor sit amet consectetur adipisicing elit...</li>
-            <li class="list-group-item list-group-item-action"><a href="#" class="text-dark text-decoration-none"><a href="/user" class="text-decoration-none">ahmed walid </a>Lorem ipsum dolor sit amet consectetur adipisicing elit...</li>
-            <li class="list-group-item list-group-item-action"><a href="#" class="text-dark text-decoration-none"><a href="/user" class="text-decoration-none">ahmed walid </a>Lorem ipsum dolor sit amet consectetur adipisicing elit...</li>
-        </ul>
+          @include('layouts.latestComments')
       </div>
       
       </div>
@@ -62,7 +53,15 @@
     
     const follow = document.getElementById('follow')
     follow.addEventListener('click', followCommunity) 
-    
+    // like
+const likeArrow = document.querySelectorAll('.like-post')
+likeArrow.forEach(arrow => arrow.addEventListener('click', e => {
+  _like('post', e.target.parentElement.parentElement.previousElementSibling.value, e.target.nextElementSibling)
+}))
+const dislikeArrow = document.querySelectorAll('.dislike-post')
+dislikeArrow.forEach(arrow => arrow.addEventListener('click', e => {
+  _dislike('post', e.target.parentElement.parentElement.previousElementSibling.value, e.target.previousElementSibling)
+}))
 
   </script>
 

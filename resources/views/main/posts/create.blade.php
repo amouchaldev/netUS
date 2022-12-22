@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 <div class="col-4">
-                    <x-communities :communities="$recommendedCommunities"></x-communities>
+                    @include('layouts.communities')
                 </div>
             </div>
         </div>

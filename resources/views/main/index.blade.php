@@ -29,7 +29,7 @@
       </div>
       
       <div class="col-12 col-lg-4">
-            <x-communities :communities="$recommendedCommunities"></x-communities>
+            @include('layouts.communities')
       </div>
       
       </div>
@@ -42,10 +42,19 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+  // follow
   let follow = document.querySelectorAll('.follow')
   follow.forEach(community => {
     community.addEventListener('click', followCommunity)
   })
-
+// like
+const likeArrow = document.querySelectorAll('.like-post')
+likeArrow.forEach(arrow => arrow.addEventListener('click', e => {
+  _like('post', e.target.parentElement.parentElement.previousElementSibling.value, e.target.nextElementSibling)
+}))
+const dislikeArrow = document.querySelectorAll('.dislike-post')
+dislikeArrow.forEach(arrow => arrow.addEventListener('click', e => {
+  _dislike('post', e.target.parentElement.parentElement.previousElementSibling.value, e.target.previousElementSibling)
+}))
 </script>
 @endsection
