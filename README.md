@@ -1,4 +1,4 @@
-#Laravel MySQL Community Project
+Laravel MySQL Community Project
 This project is a web application built with Laravel and MySQL that allows users to browse and interact with communities and their respective posts.
 
 Features
