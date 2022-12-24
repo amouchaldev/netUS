@@ -1,23 +1,28 @@
 @extends('master')
-
+@section('stylesheets')
+<style>
+    #search-box {
+        margin-top: -5px;
+    }
+</style>
+@endsection
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Register') }}</div>
+    <div class="row justify-content-center align-items-center">
+        <div class="col-lg-7 mb-5 mb-lg-0 order-lg-last">
+            <div class="">
+                {{-- <div class="card-header">{{ __('Register') }}</div> --}}
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
 
                         <div class="row mb-3">
-                            <label for="firstName" class="col-md-4 col-form-label text-md-end">{{ __('First name') }}</label>
+                            <label for="name" class="col-md-4 col-form-label text-md-end">{{ __('name') }}</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('firstName') is-invalid @enderror" name="firstName" value="{{ old('firstName') }}" required autocomplete="name" autofocus>
+                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
 
-                                @error('firstName')
+                                @error('name')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -25,7 +30,7 @@
                             </div>
                         </div>
 
-                        <div class="row mb-3">
+                        {{-- <div class="row mb-3">
                             <label for="lastName" class="col-md-4 col-form-label text-md-end">{{ __('Last name') }}</label>
 
                             <div class="col-md-6">
@@ -37,7 +42,7 @@
                                     </span>
                                 @enderror
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="row mb-3">
                             <label for="username" class="col-md-4 col-form-label text-md-end">{{ __('username') }}</label>
@@ -100,6 +105,8 @@
                 </div>
             </div>
         </div>
+        <div class="col-lg-5">
+            <img src="{{ asset('assets/img/091.png') }}" alt="" class="w-100">
+        </div>
     </div>
-</div>
 @endsection

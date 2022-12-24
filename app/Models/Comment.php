@@ -18,4 +18,11 @@ class Comment extends Model
     public function likes() {
         return $this->hasMany(CommentVote::class);
     }
+    public function scopeLikesCount($query) {
+        return $query->withCount([
+            'likes as likes_count' => function ($q) { $q->where('vote', 1); },
+            'likes as dislikes_count' => function ($q) { $q->where('vote', 0); },
+        ]);
+    }
+    
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\WithCountComments;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,4 +17,5 @@ class Community extends Model
     public function posts() {
         return $this->hasMany(Post::class);
     }
+  
 }

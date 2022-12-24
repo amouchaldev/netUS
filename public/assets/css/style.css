@@ -51,6 +51,23 @@ footer .logo {
 form .firtName, form .lastName {
     width: 48%;
 }
+.truncate-last-comments {
+width: 263px;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
+/* search box */
+#search-box input {
+    height: 0;
+    padding: 0;
+    transition: height .2s ease-in;
+}
+#search-box input.show {
+    height: 67px;
+    padding: 0 7px;
+}
 /* like - deslike */
 .like-post:active, .dislike-post:active {
     transition: all .4s ease;

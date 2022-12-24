@@ -33,17 +33,21 @@ Route::get('/post/{slug}', [PostController::class, 'show'])->name('posts.show');
 // routes that should be authenticated
 Route::group(['middleware' => ['auth', 'isMembre'], 'as' => 'posts.'], function () {
     
-    Route::get('/share', [PostController::class, 'create'])->name('share');
-    
-    Route::post('/post/store', [PostController::class, 'store'])->name('store'); 
-    
     Route::delete('/post/{id}/delete', [PostController::class, 'delete'])->name('delete'); 
     
     Route::get('/post/{slug}/edit', [PostController::class, 'edit'])->name('edit');   
     
     Route::put('/post/{id}/update', [PostController::class, 'update'])->name('update'); 
+    
+    Route::get('/share', [PostController::class, 'create'])->name('share');
 
+    Route::post('/post/store', [PostController::class, 'store'])->name('store'); 
+    
 });
+
+
+Route::get('/posts/{keywords}/search', [PostController::class, 'search'])->name('posts.search');
+
 
 Route::post('/post/{id}/{action}', [PostController::class, 'action'])->name('action'); 
 
@@ -64,7 +68,11 @@ Route::group(['middleware' => ['auth', 'isMembre'], 'as' => 'communities.'], fun
 });
 
 Route::get('/{status?}', [PostController::class, 'index'])->name('home');
-Route::get('/user/{username}', [UserController::class, 'show'])->name('users.show');
 
-// Route::group([])
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('isMembre');
+Route::get('/user/{username}', [UserController::class, 'show'])->name('users.show');
+Route::group(['prefix' => 'user', 'middleware' => 'auth', 'as' => 'users.'], function () {
+    Route::delete('{id}/delete', [UserController::class, 'delete'])->name('delete');
+    Route::post('{id}/restore', [UserController::class, 'restore'])->name('restore');
+    Route::get('list/pending', [UserController::class, 'pendingUsers'])->name('pending.list');
+    Route::patch('{id}/active', [UserController::class, 'activeNewAcc'])->name('activate');
+});

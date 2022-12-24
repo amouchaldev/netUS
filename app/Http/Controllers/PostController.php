@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Post;
 use App\Models\PostVote;
-use App\Models\UserCommunity;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 
 class PostController extends Controller
@@ -22,10 +22,10 @@ class PostController extends Controller
                 $followedCommunities = Community::whereHas('users', function ($q) {
                     $q->whereId(Auth::user()->id);
                 })->get('id');
-                $posts = Post::whereIn('community_id', $followedCommunities)->with('community', 'user')->withCount(['comments',
-                'likes as likes_count' => function ($q) { $q->where('vote', 1);},
-                'likes as dislikes_count' => function ($q) { $q->where('vote', 0);}
-                 ])->get();
+                $posts = Post::whereIn('community_id', $followedCommunities)
+                ->with('community', 'user')
+                ->likesCount()
+                ->paginate(10);
                 return view('main.index', [
                     'posts' => $posts,
                     'tab' => 'latest'
@@ -33,14 +33,11 @@ class PostController extends Controller
             }
             // posts for non authenticated users
             else {
-
                 // get random posts
                 $posts = Post::inRandomOrder()
-                ->with('community', 'user')->withCount(['comments',
-                'likes as likes_count' => function ($q) { $q->where('vote', 1);},
-                'likes as dislikes_count' => function ($q) { $q->where('vote', 0);}
-                 ])
-                ->limit(7)->get();
+                ->with('community', 'user')
+                ->likesCount()
+                ->paginate(10);
                 return view('main.index', [
                     'posts' => $posts,
                     'tab' => 'latest'
@@ -54,11 +51,11 @@ class PostController extends Controller
                 $followedCommunities = Community::whereHas('users', function ($q) {
                     $q->whereId(Auth::user()->id);
                 })->get('id');
-                $posts = Post::whereIn('community_id', $followedCommunities)->with('community', 'user')->withCount(['comments',
-                'likes as likes_count' => function ($q) { $q->where('vote', 1);},
-                'likes as dislikes_count' => function ($q) { $q->where('vote', 0);}
-                 ])
-                 ->orderBy('number_visites', 'DESC')->limit(7)->get();
+                $posts = Post::whereIn('community_id', $followedCommunities)
+                ->with('community', 'user')
+                ->likesCount()
+                 ->orderBy('number_visites', 'DESC')
+                 ->paginate(10);
                 return view('main.index', [
                     'posts' => $posts,
                     'tab' => 'popular'
@@ -67,30 +64,35 @@ class PostController extends Controller
             // posts for non authenticated users
             else {
                 // get random posts
-                $posts = Post::with('community', 'user')->withCount(['comments', 'likes' => function ($q) { $q->where('vote', 1); }])->orderBy('number_visites', 'DESC')->limit(7)->get();
+                $posts = Post::with('community', 'user')
+                ->likesCount()
+                ->orderBy('number_visites', 'DESC')
+                ->paginate(10);
                 return view('main.index', [
                     'posts' => $posts,
                     'tab' => 'popular'
-
                 ]);
             }        
         }   
     }
    
     public function create() {
+        Gate::authorize('create', Post::class);
         return view('main.posts.create');
     }
 
     public function edit($slug) {
-        $post = Post::where('slug', $slug)->with('community')->first();
+        $post = Post::where('slug', $slug)
+        ->with('community')->first();
+        Gate::authorize('update', $post);
         return view('main.posts.edit', [
             'post' => $post,
         ]);
     }
 
     public function update($id, Request $request) {
-   
         $post = post::find($id);
+        Gate::authorize('update', $post);
         $post->title = $request->title;
         $post->body = $request->body;
         $post->community_id = $request->community;
@@ -99,6 +101,7 @@ class PostController extends Controller
     }
 
     public function store(Request $request) {
+        Gate::authorize('create', Post::class);
         $request->validate([
             'community' => 'required',
             'title' => 'required', 
@@ -118,18 +121,18 @@ class PostController extends Controller
 
         $post = Post::whereSlug($slug)
         ->with(['community', 'user'])
-        ->withCount(['comments',
-         'likes as likes_count' => function ($q) { $q->where('vote', 1);},
-         'likes as dislikes_count' => function ($q) { $q->where('vote', 0);}
-        ])->first();
+        ->likesCount()
+        ->first();
 
         $post->number_visites++;
         $post->save();
-        $comments = Comment::where('post_id', $post->id)->with('user')->withCount([
-            'likes as likes_count' => function ($q) { $q->where('vote', 1); },
-            'likes as dislikes_count' => function ($q) { $q->where('vote', 0); },
-        ])->orderBy('created_at', 'DESC')->get();
-        $alsoLearn = Post::where('community_id', $post->community->id)->inRandomOrder()->limit(6)->get();
+        $comments = Comment::where('post_id', $post->id)
+        ->with('user')
+        ->likesCount()
+        ->orderBy('created_at', 'DESC')
+        ->paginate(10);
+        $alsoLearn = Post::where('community_id', $post->community->id)
+        ->inRandomOrder()->limit(6)->get();
         // $likes_count = $post->likes;
         // return $post->likes;
         return view('main.post', [
@@ -139,17 +142,21 @@ class PostController extends Controller
         ]);
     }
 
-
-    
-
     public function delete($id) {
-        
-        Post::destroy($id);
-        return response()->json([
-            'message' => 'Post Deleted Successfully',
-            'status' => true,
-            // 'id' => $id
-        ]);
+        $response = Gate::inspect('delete', Post::find($id));
+        if ($response->allowed()) {
+            Post::destroy($id);
+            return response()->json([
+                'message' => 'Post Deleted Successfully',
+                'status' => true,
+            ]);
+        }
+        else {
+            return response()->json([
+                'message' => 'NOT AUTHORIZED',
+                'status' => false,
+            ]);
+        }
     }
     // like and dislike
     public function action($post_id, $action) {
@@ -259,4 +266,17 @@ class PostController extends Controller
         }
     }
 
+
+
+    public function search($keywords) {
+        $result = Post::where('title', 'like', '%' . $keywords . '%')
+        ->orWhere('body', 'like', '%' . $keywords . '%')
+        ->with(['user', 'community'])
+        ->likesCount()
+        ->paginate(10);
+        return view('main.search', [
+            'posts' => $result,
+            'keywords' => $keywords
+        ]);
+    }
 }

@@ -8,42 +8,56 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Events\PostCommented;
 use App\Events\Reaction;
+use Illuminate\Support\Facades\Gate;
 
 class CommentController extends Controller
 {
     
     public function store($id, Request $request) {
-        // return $id;
-        // die();
-        $request->validate([
-            'body' => 'required',
-        ]);
-        $comment = new Comment();
-        $comment->user_id = Auth::user()->id;
-        $comment->post_id = $id;
-        $comment->body = $request['body'];
-        if ($comment->save()) {
-            event(new PostCommented($comment));
-            return redirect()->to( app('url')->previous() . '#comments');
-        }
+        Gate::authorize('create', Comment::class);
+            $request->validate([
+                'body' => 'required',
+            ]);
+            $comment = new Comment();
+            $comment->user_id = Auth::user()->id;
+            $comment->post_id = $id;
+            $comment->body = $request['body'];
+            if ($comment->save()) {
+                event(new PostCommented($comment));
+                return redirect()->to( app('url')->previous() . '#comments');
+            }
+        
+    
     }
 
     public function delete($id) {
-        Comment::destroy($id);
-        return redirect()->to(app('url')->previous(). '#comments');
+        $authorize = Gate::inspect('delete', Comment::find($id));
+        if ($authorize->allowed()) {
+            Comment::destroy($id);
+            return redirect()->to(app('url')->previous(). '#comments');
+        }
+        else {
+            return abort(403);
+        }
     }
     
     public function update($id, Request $request) {
         $comment = Comment::find($id);
-        $comment->body = $request->newComment;
-        $comment->update();
-        
-       return response()->json([
-        'comment' => $request->newComment,
-        'id' => $id,
-        'message' => 'comment updated successfully',
-        'status' => true
-       ]);
+        $authorize = Gate::inspect('update', Comment::find($id));
+        if ($authorize->allowed()) {
+            $comment->body = $request->newComment;
+            $comment->update();
+            return response()->json([
+                'comment' => $request->newComment,
+                'id' => $id,
+                'message' => 'comment updated successfully',
+                'status' => true
+            ], 200);
+        }
+        else {
+            return response()->json(['status' => false], 403);
+        }
+    
     }
 
 

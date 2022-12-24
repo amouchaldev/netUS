@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Http\ViewComposers\CommunitiesYouMightLike;
+use App\Http\ViewComposers\Communities;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,5 +26,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         view()->composer('layouts.communities', CommunitiesYouMightLike::class);
+        view()->composer('layouts.leftBar', Communities::class);
     }
 }

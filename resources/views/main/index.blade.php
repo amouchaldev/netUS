@@ -25,7 +25,7 @@
             You Should Follow Some Communities To Get Some Intersting Posts
           </div>
           @endforelse
-
+          {{ $posts->links('pagination::bootstrap-5') }}
       </div>
       
       <div class="col-12 col-lg-4">
@@ -42,6 +42,7 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+  _socket()
   // follow
   let follow = document.querySelectorAll('.follow')
   follow.forEach(community => {

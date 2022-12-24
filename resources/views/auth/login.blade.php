@@ -1,14 +1,19 @@
 @extends('master')
-
+@section('stylesheets')
+<style>
+    #search-box {
+        margin-top: -34px;
+    }
+</style>
+@endsection
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
+    <div class="row align-items-center justiyf-content-center">
+        <div class="col-lg-6 mb-5 mb-lg-0">
             @if (session()->has('message'))
                 <p class="alert alert-warning">{{ session()->get('message') }}</p>
             @endif
-            <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+            <div class="">
+                {{-- <div class="card-header">{{ __('Login') }}</div> --}}
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">
@@ -71,6 +76,8 @@
                 </div>
             </div>
         </div>
+        <div class="col-lg-6">
+            <img src="{{ asset('assets/img/104.png') }}" alt="" class="w-100">
+        </div>
     </div>
-</div>
 @endsection

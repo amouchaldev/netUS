@@ -4,9 +4,9 @@
     <li class="list-group-item list-group-item-action d-flex"><a href="#" class="text-dark text-decoration-none">
         <a 
         href="{{ route('users.show', $comment->user->username) }}" 
-        class="text-decoration-none me-1">{{ $comment->user->name }}
+        class="text-decoration-none me-1 text-nowrap">{{ $comment->user->name }}
         </a>
-        <span>
+        <span class="truncate-last-comments">
             {!! $comment->body !!}
         </span>
     </li>
