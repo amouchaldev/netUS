@@ -15,4 +15,4 @@ This project is a web application built with Laravel and MySQL that allows users
 
 
 ### Video Navigating This Website In Youtube
-[<img src="https://user-images.githubusercontent.com/69693216/212333181-d658ecc5-494d-48a8-b3c1-7282104df24c.png" width="90%">](https://www.youtube.com/watch?v=xyDTutS7P5c)
+[<img src="https://user-images.githubusercontent.com/69693216/212333181-d658ecc5-494d-48a8-b3c1-7282104df24c.png" width="100%">](https://www.youtube.com/watch?v=xyDTutS7P5c)
